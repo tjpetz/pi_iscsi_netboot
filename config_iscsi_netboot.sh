@@ -23,7 +23,7 @@ echo "Initiator Name: $INITIATOR_NAME"
 
 # Login to the iscsi server and then pause.  This will allow the admin
 # to create the LUN and HOST records with the correct permissions.
-
+sudo iscsiadm --portal $ISCSI_SRV --mode discovery --type sendtargets
 sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --login
 
 echo
