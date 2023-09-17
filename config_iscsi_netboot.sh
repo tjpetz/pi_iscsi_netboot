@@ -31,7 +31,7 @@ echo "Configure a HOST on the storage server for the Initiator: $INITIATOR_NAME"
 read -p "After configuring the storage, press any key to continue..."
 
 # logout and back in again to make the LUN visible
-sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --logoff
+sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --logout
 sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --login
 
 # make the file system
