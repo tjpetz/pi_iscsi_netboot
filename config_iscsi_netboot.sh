@@ -21,6 +21,9 @@ echo "IQN: $IQN"
 echo "Serial: $SERIAL"
 echo "Initiator Name: $INITIATOR_NAME"
 
+# Mark iSCSI to rebuild the initramfs
+sudo touch /etc/iscsi/iscsi.initramfs
+
 # Login to the iscsi server and then pause.  This will allow the admin
 # to create the LUN and HOST records with the correct permissions.
 sudo iscsiadm --portal $ISCSI_SRV --mode discovery --type sendtargets
