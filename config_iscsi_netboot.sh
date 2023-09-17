@@ -5,6 +5,9 @@
 # The SD card will remain in the machine and is configured to boot if the network
 # boot fails
 
+# Install prerequisite packages
+sudo apt-get install -y open-iscsi initramfs-tools dnsutils
+
 ISCSI_SRV=nas02.bb.tjpetz.com
 IQN=iqn.2000-01.com.synology:nas02.default-target.846be8f8b5d
 NFS_BOOT=nas02.bb.tjpetz.com:/volume1/nas02-pxe_boot/pi_boot
@@ -59,6 +62,7 @@ sudo echo "$NFS_BOOT/$SERIAL /boot nfs defaults" | sudo tee -a /mnt/iscsi/etc/fs
 sudo mount $NFS_BOOT /mnt/boot
 sudo mkdir /mnt/boot/$SERIAL
 sudo rsync -a /boot/ /mnt/boot/$SERIAL/
+sudo touch /mnt/boot/$SERIAL/ssh
 
 # make up the cmdline.txt
 cat << EOF | sudo tee /mnt/boot/$SERIAL/cmdline.txt
