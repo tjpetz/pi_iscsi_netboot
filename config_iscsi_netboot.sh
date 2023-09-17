@@ -63,7 +63,7 @@ sudo rsync -a /boot/ /mnt/boot/$SERIAL/
 
 # make up the cmdline.txt
 cat << EOF | sudo tee /mnt/boot/$SERIAL/cmdline.txt
-console=serial0,115200 console=tty1 ip=dhcp ISCSI_INITIATOR=InitiatorName=$INITIATOR_NAME ISCSI_TARGET_NAME=$IQN ISCSI_TARGET_IP=$ISCSI_SRV_IP ISCSI_TARGET_PORT=3260 ISCSI_TARGET_GROUP=1 rw rootfs=ext4 root=UUID=$PART_UUID elevator=deadline fsck.repair=yes rootwait
+console=serial0,115200 console=tty1 ip=dhcp ISCSI_INITIATOR=$INITIATOR_NAME ISCSI_TARGET_NAME=$IQN ISCSI_TARGET_IP=$ISCSI_SRV_IP ISCSI_TARGET_PORT=3260 ISCSI_TARGET_GROUP=1 rw rootfs=ext4 root=UUID=$PART_UUID elevator=deadline fsck.repair=yes rootwait
 EOF
 
 # Build the initramfs and update config.txt to use it.
