@@ -17,6 +17,8 @@ echo "Initiator Name: $INITIATOR_NAME"
 # LUN add a Host with the specified Initiator Name and configure the access
 # controls to the drive.
 
+sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --login
+
 echo
 echo "======================================================"
 echo "Configure the LUN on the storage server."
