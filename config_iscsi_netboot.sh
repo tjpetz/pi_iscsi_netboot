@@ -18,9 +18,8 @@ echo "IQN: $IQN"
 echo "Serial: $SERIAL"
 echo "Initiator Name: $INITIATOR_NAME"
 
-# I think at this point we want to pause and go to the NAS server create the
-# LUN add a Host with the specified Initiator Name and configure the access
-# controls to the drive.
+# Login to the iscsi server and then pause.  This will allow the admin
+# to create the LUN and HOST records with the correct permissions.
 
 sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --login
 
