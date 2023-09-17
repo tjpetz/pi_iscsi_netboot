@@ -36,9 +36,11 @@ sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --login
 
 # make the file system
 sudo mkfs.ext4 -m0 /dev/sda
-sudo e2label /dev/sda "iscsi_root"
 
 PART_UUID=$(sudo blkid /dev/sda | cut -d " " -f 2 | sed -e 's/UUID=\"//' -e 's/\"//')
+
+# label the file system for convenient reference.
+sudo e2label /dev/sda "iscsi_root"
 
 sudo rsync -ahP --exclude /boot --exclude /proc --exclude /run --exclude /sys --exclude /mnt --exclude /media --exclude /tmp —-sparse / /mnt/iscsi/
 
