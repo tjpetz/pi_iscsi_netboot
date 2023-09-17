@@ -45,6 +45,10 @@ PART_UUID=$(sudo blkid /dev/sda | cut -d " " -f 2 | sed -e 's/UUID=\"//' -e 's/\
 # label the file system for convenient reference.
 sudo e2label /dev/sda "iscsi_root"
 
+# make our mount points
+sudo mkdir /mnt/iscsi
+sudo mkdir /mnt/boot
+
 # mount the filesystem
 sudo mount /dev/sda /mnt/iscsi
 # sync the root except dynamic directories to the iscsi drive
