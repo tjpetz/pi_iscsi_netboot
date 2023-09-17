@@ -37,19 +37,20 @@ sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --login
 # make the file system
 sudo mkfs.ext4 -m0 /dev/sda
 
+# Save the partition UUID
 PART_UUID=$(sudo blkid /dev/sda | cut -d " " -f 2 | sed -e 's/UUID=\"//' -e 's/\"//')
 
 # label the file system for convenient reference.
 sudo e2label /dev/sda "iscsi_root"
 
+# mount the filesystem
+sudo mount /dev/sda /mnt/iscsi
+# sync the root except dynamic directories to the iscsi drive
 sudo rsync -ahP --exclude /boot --exclude /proc --exclude /run --exclude /sys --exclude /mnt --exclude /media --exclude /tmp —-sparse / /mnt/iscsi/
-
+# make the special directories
 sudo mkdir /mnt/iscsi/{proc,run,sys,boot,mnt,media,tmp}
 
 # Update configuration files
-
-# update the Initiator Name
-# sudo sed "s/iqn.*$/$INITIATOR_NAME/" -i /mnt/iscsi/etc/iscsi/initiatorname.iscsi
 
 # update fstab to not mount the SD card and to mount the boot directory via NFS
 sudo sed "s/^PARTUUID/#PARTUUID/" -i /mnt/iscsi/etc/fstab
