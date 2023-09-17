@@ -47,7 +47,7 @@ sudo mkdir /mnt/iscsi/{proc,run,sys,boot,mnt,media,tmp}
 # Update configuration files
 
 # update the Initiator Name
-sudo sed "s/iqn.*$/$INITIATOR_NAME/" -i /mnt/iscsi/etc/iscsi/initiatorname.iscsi
+# sudo sed "s/iqn.*$/$INITIATOR_NAME/" -i /mnt/iscsi/etc/iscsi/initiatorname.iscsi
 
 # update fstab to not mount the SD card and to mount the boot directory via NFS
 sudo sed "s/^PARTUUID/#PARTUUID/" -i /mnt/iscsi/etc/fstab
