@@ -1,11 +1,16 @@
 #!/bin/bash
 
+# Configure a system so it will network boot to an iscsi drive.  The boot
+# partition is on an NFS share which is configured as the source for the PXE boot.
+# The SD card will remain in the machine and is configured to boot if the network
+# boot fails
+
 ISCSI_SRV=nas02.bb.tjpetz.com
 IQN=iqn.2000-01.com.synology:nas02.default-target.846be8f8b5d
 NFS_BOOT=nas02.bb.tjpetz.com:/volume1/nas02-pxe_boot/pi_boot
 ISCSI_SRV_IP=$(nslookup $ISCSI_SRV | grep "Address: " | head -n 1 | cut -d " " -f 2)
 SERIAL=$(cat /proc/cpuinfo | grep Serial | head -n 1 | cut -d : -f 2 | sed 's/ 10000000//')
-INITIATOR_NAME=$(iscsi-iname)
+INITIATOR_NAME=$(sudo grep ^InitiatorName /etc/iscsi/initiatorname.iscsi | cut -d "=" -f 2)
 
 echo "iSCSI Server: $ISCSI_SRV"
 echo "iSCSI Server IP: $ISCSI_SRV_IP"
@@ -25,8 +30,13 @@ echo "Configure the LUN on the storage server."
 echo "Configure a HOST on the storage server for the Initiator: $INITIATOR_NAME"
 read -p "After configuring the storage, press any key to continue..."
 
+# logout and back in again to make the LUN visible
+sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --logoff
+sudo iscsiadm --portal $ISCSI_SRV -T $IQN --mode node --login
+
 # make the file system
 sudo mkfs.ext4 -m0 /dev/sda
+sudo e2label /dev/sda "iscsi_root"
 
 PART_UUID=$(sudo blkid /dev/sda | cut -d " " -f 2 | sed -e 's/UUID=\"//' -e 's/\"//')
 
