@@ -58,4 +58,4 @@ console=serial0,115200 console=tty1 ip=dhcp ISCSI_INITIATOR=InitiatorName=$INITI
 EOF
 
 # add the redirect to the initramfs in config.txt
-echo "initramfs initrd.img-`uname -r` followkernel" | sudo tee -a /mnt/boot/config.txt
+echo "initramfs initrd.img-`uname -r` followkernel" | sudo tee -a /mnt/boot/$SERIAL/config.txt
