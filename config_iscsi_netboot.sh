@@ -8,9 +8,12 @@
 # Install prerequisite packages
 sudo apt-get install -y open-iscsi initramfs-tools dnsutils
 
+# EDIT: update the following to match your ISCSI server, IQN, and NFS boot share.
 ISCSI_SRV=nas02.bb.tjpetz.com
 IQN=iqn.2000-01.com.synology:nas02.default-target.846be8f8b5d
 NFS_BOOT=nas02.bb.tjpetz.com:/volume1/nas02-pxe_boot/pi_boot
+
+# compute key system configuration variables.
 ISCSI_SRV_IP=$(nslookup $ISCSI_SRV | grep "Address: " | head -n 1 | cut -d " " -f 2)
 SERIAL=$(cat /proc/cpuinfo | grep Serial | head -n 1 | cut -d : -f 2 | sed 's/ 10000000//')
 INITIATOR_NAME=$(sudo grep ^InitiatorName /etc/iscsi/initiatorname.iscsi | cut -d "=" -f 2)
