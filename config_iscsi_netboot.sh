@@ -4,14 +4,18 @@
 # partition is on an NFS share which is configured as the source for the PXE boot.
 # The SD card will remain in the machine and is configured to boot if the network
 # boot fails
+#
+# History
+# 2 Jan 2025 - updated to support Bookworm version of Raspberry Pi OS
+#
 
 # Install prerequisite packages
 sudo apt-get install -y open-iscsi initramfs-tools dnsutils
 
 # EDIT: update the following to match your ISCSI server, IQN, and NFS boot share.
-ISCSI_SRV=nas02.bb.tjpetz.com
-IQN=iqn.2000-01.com.synology:nas02.default-target.846be8f8b5d
-NFS_BOOT=nas02.bb.tjpetz.com:/volume1/nas02-pxe_boot/pi_boot
+ISCSI_SRV=nas03.bb.tjpetz.com
+IQN=iqn.2000-01.com.synology:nas03.default-target.bf2aa0b3f94
+NFS_BOOT=nas02=3.bb.tjpetz.com:/volume1/nas03-pxe_boot/pi_boot
 
 # compute key system configuration variables.
 ISCSI_SRV_IP=$(nslookup $ISCSI_SRV | grep "Address: " | head -n 1 | cut -d " " -f 2)
@@ -58,7 +62,7 @@ sudo mkdir /mnt/boot
 # mount the filesystem
 sudo mount /dev/sda /mnt/iscsi
 # sync the root except dynamic directories to the iscsi drive
-sudo rsync -ahP --exclude /boot --exclude /proc --exclude /run --exclude /sys --exclude /mnt --exclude /media --exclude /tmp —-sparse / /mnt/iscsi/
+sudo rsync -aP --exclude /boot --exclude /proc --exclude /run --exclude /sys --exclude /mnt --exclude /media --exclude /tmp —-sparse / /mnt/iscsi/
 # make the special directories
 sudo mkdir /mnt/iscsi/{proc,run,sys,boot,mnt,media,tmp}
 
@@ -71,7 +75,7 @@ sudo echo "$NFS_BOOT/$SERIAL /boot nfs defaults" | sudo tee -a /mnt/iscsi/etc/fs
 # Build our NFS mounted /boot and make the machine specific boot directory
 sudo mount $NFS_BOOT /mnt/boot
 sudo mkdir /mnt/boot/$SERIAL
-sudo rsync -a /boot/ /mnt/boot/$SERIAL/
+sudo cp -r /boot/firmware /mnt/boot/$SERIAL/
 sudo touch /mnt/boot/$SERIAL/ssh
 
 # make up the cmdline.txt
@@ -82,4 +86,4 @@ EOF
 # Build the initramfs and update config.txt to use it.
 sudo update-initramfs -v -k `uname -r` -c -b /mnt/boot/$SERIAL
 
-echo "initramfs initrd.img-`uname -r` followkernel" | sudo tee -a /mnt/boot/$SERIAL/config.txt
+# echo "initramfs initrd.img-`uname -r` followkernel" | sudo tee -a /mnt/boot/$SERIAL/config.txt
