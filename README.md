@@ -44,5 +44,5 @@ sudo rpi-eeprom-config --apply netboot.conf
 Run the script to configure the system for iscsi booting
 
 ```#!/bin/bash
-./pi_iscsi_netboot/config_iscsi_netboot.sh
+. pi_iscsi_netboot/config_iscsi_netboot.sh
 ```
