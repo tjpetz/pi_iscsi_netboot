@@ -13,9 +13,9 @@
 sudo apt-get install -y open-iscsi initramfs-tools dnsutils
 
 # EDIT: update the following to match your ISCSI server, IQN, and NFS boot share.
-ISCSI_SRV=nas03.bb.tjpetz.com
+ISCSI_SRV=nas03.hs.tjpetz.com
 IQN=iqn.2000-01.com.synology:nas03.default-target.bf2aa0b3f94
-NFS_BOOT=nas02=3.bb.tjpetz.com:/volume1/nas03-pxe_boot/pi_boot
+NFS_BOOT=nas03.hs.tjpetz.com:/volume1/nas03-pxe_boot/pi_boot
 
 # compute key system configuration variables.
 ISCSI_SRV_IP=$(nslookup $ISCSI_SRV | grep "Address: " | head -n 1 | cut -d " " -f 2)
@@ -75,7 +75,9 @@ sudo echo "$NFS_BOOT/$SERIAL /boot nfs defaults" | sudo tee -a /mnt/iscsi/etc/fs
 # Build our NFS mounted /boot and make the machine specific boot directory
 sudo mount $NFS_BOOT /mnt/boot
 sudo mkdir /mnt/boot/$SERIAL
-sudo cp -r /boot/firmware /mnt/boot/$SERIAL/
+sudo cp -r /boot/firmware/* /mnt/boot/$SERIAL/
+
+# enable SSH
 sudo touch /mnt/boot/$SERIAL/ssh
 
 # make up the cmdline.txt
