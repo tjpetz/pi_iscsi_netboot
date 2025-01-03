@@ -46,3 +46,13 @@ Run the script to configure the system for iscsi booting
 ```#!/bin/bash
 . pi_iscsi_netboot/config_iscsi_netboot.sh
 ```
+
+# config_nfs_netboot.sh
+
+Similar to config_iscsi_netboot.sh except that rather than iscsi the root
+file system is NFS mounted.
+
+Note, for the root filesyste the NFS server must be identified by IP address
+as when the root fs is mounted DNS name resolution is not yet available in that 
+phase of the boot process.
+
