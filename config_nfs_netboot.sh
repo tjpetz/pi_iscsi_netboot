@@ -21,7 +21,7 @@ NFS_BOOT=$NFS_SRV:/volume1/nas03-pxe_boot/pi_boot
 # compute key system configuration variables.
 NFS_SRV_IP=$(nslookup $NFS_SRV | grep "Address: " | head -n 1 | cut -d " " -f 2)
 SERIAL=$(cat /proc/cpuinfo | grep Serial | head -n 1 | cut -d : -f 2 | sed 's/ 10000000//')
-NFS_ROOT=$NFS_SRV_IF:/volume1/nas03-pxe-boot/nfs_root
+NFS_ROOT=$NFS_SRV_IP:/volume1/nas03-pxe_boot/nfs_root
 
 echo "SRV_NAME: $SRV_NAME"
 echo "NFS Server: $NFS_SRV"
@@ -36,27 +36,29 @@ sudo mkdir /mnt/boot
 # mount the filesystem
 sudo mount $NFS_ROOT /mnt/nfs_root
 sudo mkdir /mnt/nfs_root/$SRV_NAME
+sudo mount $NFS_BOOT /mnt/boot
+sudo mkdir /mnt/boot/$SERIAL
 
 # sync the root except dynamic directories to the iscsi drive
 sudo rsync -axP --exclude /proc --exclude /run --exclude /sys --exclude /mnt --exclude /media --exclude /tmp —-sparse / /mnt/nfs_root/$SRV_NAME
 # make the special directories
-sudo mkdir /mnt/iscsi/{proc,run,sys,boot,mnt,media,tmp}
+sudo mkdir /mnt/nfs_root/$SRV_NAME/{proc,run,sys,mnt,media,tmp}
 
 # Update configuration files
 
 # update fstab to not mount the SD card and to mount the boot directory via NFS
-sudo sed "s/^PARTUUID/#PARTUUID/" -i /mnt/iscsi/etc/fstab
-sudo echo "$NFS_BOOT/$SERIAL /boot/firmware nfs defaults" | sudo tee -a /mnt/iscsi/etc/fstab
-
-# make up the cmdline.txt
-cat << EOF | sudo tee /mnt/boot/$SERIAL/cmdline.txt
-root=/dev/nfs nfsroot=$NFS_ROOT/$SRV_NAME,vers=3 rw ip=dhcp rootwait
-EOF
+sudo sed "s/^PARTUUID/#PARTUUID/" -i /mnt/nfs_root/$SRV_NAME/etc/fstab
+sudo echo "$NFS_BOOT/$SERIAL /boot/firmware nfs defaults" | sudo tee -a /mnt/nfs_root/$SRV_NAME/etc/fstab
 
 # Build our NFS mounted /boot and make the machine specific boot directory
 sudo mount $NFS_BOOT /mnt/boot
 sudo mkdir /mnt/boot/$SERIAL
 sudo cp -r /boot/firmware/* /mnt/boot/$SERIAL/
+
+# make up the cmdline.txt
+cat << EOF | sudo tee /mnt/boot/$SERIAL/cmdline.txt
+root=/dev/nfs nfsroot=$NFS_ROOT/$SRV_NAME,vers=3 rw ip=dhcp rootwait
+EOF
 
 # enable SSH
 sudo touch /mnt/boot/$SERIAL/ssh

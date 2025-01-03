@@ -62,9 +62,9 @@ sudo mkdir /mnt/boot
 # mount the filesystem
 sudo mount /dev/sda /mnt/iscsi
 # sync the root except dynamic directories to the iscsi drive
-sudo rsync -aP --exclude /boot --exclude /proc --exclude /run --exclude /sys --exclude /mnt --exclude /media --exclude /tmp —-sparse / /mnt/iscsi/
+sudo rsync -axP --exclude /proc --exclude /run --exclude /sys --exclude /mnt --exclude /media --exclude /tmp —-sparse / /mnt/iscsi/
 # make the special directories
-sudo mkdir /mnt/iscsi/{proc,run,sys,boot,mnt,media,tmp}
+sudo mkdir /mnt/iscsi/{proc,run,sys,mnt,media,tmp}
 
 # Update configuration files
 
