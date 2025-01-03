@@ -70,7 +70,7 @@ sudo mkdir /mnt/iscsi/{proc,run,sys,boot,mnt,media,tmp}
 
 # update fstab to not mount the SD card and to mount the boot directory via NFS
 sudo sed "s/^PARTUUID/#PARTUUID/" -i /mnt/iscsi/etc/fstab
-sudo echo "$NFS_BOOT/$SERIAL /boot nfs defaults" | sudo tee -a /mnt/iscsi/etc/fstab
+sudo echo "$NFS_BOOT/$SERIAL /boot/firmware nfs defaults" | sudo tee -a /mnt/iscsi/etc/fstab
 
 # Build our NFS mounted /boot and make the machine specific boot directory
 sudo mount $NFS_BOOT /mnt/boot
